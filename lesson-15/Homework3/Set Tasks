@@ -61,6 +61,7 @@ def merge_and_deduplicate(list1, list2):
 def check_disjoint_sets(set1, set2):
     return set1.isdisjoint(set2)
 
+
 def remove_duplicates_from_list(lst):
     return list(set(lst))
 
