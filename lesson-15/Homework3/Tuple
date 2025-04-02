@@ -1,1 +1,78 @@
+def count_occurrences_tuple(tpl, elem):
+    return tpl.count(elem)
 
+def max_element_tuple(tpl):
+    return max(tpl)
+
+def min_element_tuple(tpl):
+    return min(tpl)
+
+def check_element_tuple(tpl, elem):
+    return elem in tpl
+
+def first_element_tuple(tpl):
+    return tpl[0] if tpl else None
+
+def last_element_tuple(tpl):
+    return tpl[-1] if tpl else None
+
+def tuple_length(tpl):
+    return len(tpl)
+
+def slice_tuple(tpl):
+    return tpl[:3]
+
+def concatenate_tuples(tpl1, tpl2):
+    return tpl1 + tpl2
+
+def check_empty_tuple(tpl):
+    return len(tpl) == 0
+
+def get_all_indices_tuple(tpl, elem):
+    return [i for i, x in enumerate(tpl) if x == elem]
+
+def find_second_largest_tuple(tpl):
+    return sorted(set(tpl))[-2] if len(set(tpl)) > 1 else None
+
+def find_second_smallest_tuple(tpl):
+    return sorted(set(tpl))[1] if len(set(tpl)) > 1 else None
+
+def create_single_element_tuple(elem):
+    return (elem,)
+
+def convert_list_to_tuple(lst):
+    return tuple(lst)
+
+def check_if_sorted_tuple(tpl):
+    return tpl == tuple(sorted(tpl))
+
+def find_maximum_of_subtuple(tpl, start, end):
+    return max(tpl[start:end]) if start < end and start >= 0 and end <= len(tpl) else None
+
+def find_minimum_of_subtuple(tpl, start, end):
+    return min(tpl[start:end]) if start < end and start >= 0 and end <= len(tpl) else None
+
+def remove_element_by_value_tuple(tpl, elem):
+    lst = list(tpl)
+    if elem in lst:
+        lst.remove(elem)
+    return tuple(lst)
+
+def create_nested_tuple(tpl, size):
+    return tuple(tpl[i:i+size] for i in range(0, len(tpl), size))
+
+def repeat_elements_tuple(tpl, num):
+    return tuple(x for x in tpl for _ in range(num))
+
+def create_range_tuple(start, end):
+    return tuple(range(start, end + 1))
+
+def reverse_tuple(tpl):
+    return tpl[::-1]
+
+def check_palindrome_tuple(tpl):
+    return tpl == tpl[::-1]
+
+def get_unique_elements_tuple(tpl):
+    seen = set()
+    return tuple(x for x in tpl if not (x in seen or seen.add(x)))
