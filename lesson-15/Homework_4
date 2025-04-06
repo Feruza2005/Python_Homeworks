@@ -1,0 +1,165 @@
+1.continue skips the current iteration of the loop and moves to the next one.
+break exits the loop completely, even if the loop condition is still true.
+Example:
+for i in range(5):
+    if i == 2:
+        continue
+    if i == 4:
+        break
+    print(i)
+Output:
+0
+1
+3
+2. for loop is used when you know how many times you want to loop (e.g., iterating over a list, a range, etc.).
+while loop is used when you want to loop as long as a condition is true — you might not know the exact number of times in advance.
+Example:
+# for loop
+for i in range(3):
+    print(i)
+# while loop
+i = 0
+while i < 3:
+    print(i)
+    i += 1
+3.Nested loops mean a loop inside another loop. Useful for things like 2D arrays or comparisons between two lists.
+Example:
+for i in range(3):
+    for j in range(2):
+        print(f"i={i}, j={j}")
+Homework Solutions
+1. from collections import Counter
+
+def uncommon_elements(list1, list2):
+    c1 = Counter(list1)
+    c2 = Counter(list2)
+    result = []
+    
+    for key in (c1 - c2).elements():
+        result.append(key)
+    for key in (c2 - c1).elements():
+        result.append(key)
+
+    return result
+
+# Test cases
+print(uncommon_elements([1, 1, 2], [2, 3, 4]))  # [1, 1, 3, 4]
+print(uncommon_elements([1, 2, 3], [4, 5, 6]))  # [1, 2, 3, 4, 5, 6]
+print(uncommon_elements([1, 1, 2, 3, 4, 2], [1, 3, 4, 5]))  # [2, 2, 5]
+2. Print squares less than n
+def print_squares(n):
+    for i in range(1, n):
+        print(i * i)
+
+# Example:
+print_squares(5)
+3. Insert underscore after every third character unless...
+def insert_underscores(txt):
+    result = ""
+    i = 0
+    while i < len(txt):
+        result += txt[i]
+        # Check if this is every 3rd character (1-based index)
+        if (i + 1) % 3 == 0:
+            if i == len(txt) - 1:
+                break
+            if txt[i] in "aeiou" or (i + 1 < len(txt) and txt[i+1] == '_'):
+                if i + 1 < len(txt):
+                    result += txt[i+1] + "_"
+                    i += 1
+                else:
+                    result += "_"
+            else:
+                result += "_"
+        i += 1
+    return result
+# Test cases
+print(insert_underscores("hello"))          # hel_lo
+print(insert_underscores("assalom"))        # ass_alom
+print(insert_underscores("abcabcdabcdeabcdefabcdefg"))  # abc_abcd_abcdeab_cdef_abcdefg
+4. Number Guessing Game
+import random
+
+def number_guessing_game():
+    while True:
+        number = random.randint(1, 100)
+        attempts = 10
+
+        while attempts > 0:
+            guess = int(input("Guess a number (1-100): "))
+            if guess < number:
+                print("Too low!")
+            elif guess > number:
+                print("Too high!")
+            else:
+                print("You guessed it right!")
+                break
+            attempts -= 1
+
+        if attempts == 0:
+            print("You lost. Want to play again?")
+            answer = input().lower()
+            if answer not in ['y', 'yes', 'ok']:
+                break
+
+# To run:
+# number_guessing_game()
+5. Password Checker
+def check_password():
+    password = input("Enter your password: ")
+    if len(password) < 8:
+        print("Password is too short.")
+    elif not any(c.isupper() for c in password):
+        print("Password must contain an uppercase letter.")
+    else:
+        print("Password is strong.")
+
+# check_password()
+6. Prime Numbers (1 to 100) using nested loops
+def print_primes():
+    for num in range(2, 101):
+        is_prime = True
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                is_prime = False
+                break
+        if is_prime:
+            print(num)
+
+# print_primes()
+Bonus: Rock, Paper, Scissors Game
+import random
+
+def rock_paper_scissors():
+    choices = ["rock", "paper", "scissors"]
+    player_score = 0
+    computer_score = 0
+
+    while player_score < 5 and computer_score < 5:
+        computer = random.choice(choices)
+        player = input("Choose rock, paper, or scissors: ").lower()
+        
+        if player not in choices:
+            print("Invalid input.")
+            continue
+
+        print(f"Computer chose: {computer}")
+        if player == computer:
+            print("It's a tie!")
+        elif (player == "rock" and computer == "scissors") or \
+             (player == "scissors" and computer == "paper") or \
+             (player == "paper" and computer == "rock"):
+            print("You win this round!")
+            player_score += 1
+        else:
+            print("Computer wins this round.")
+            computer_score += 1
+
+        print(f"Score -> You: {player_score}, Computer: {computer_score}\n")
+
+    if player_score == 5:
+        print(" You won the match!")
+    else:
+        print(" Computer won the match!")
+
+# rock_paper_scissors()
