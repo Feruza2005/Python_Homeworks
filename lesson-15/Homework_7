@@ -1,0 +1,247 @@
+# --- Generalized Vector Class ---
+import math
+
+class Vector:
+    def __init__(self, *components):
+        self.components = components
+
+    def __str__(self):
+        return f"Vector({', '.join(map(str, self.components))})"
+
+    def __add__(self, other):
+        if len(self.components) != len(other.components):
+            raise ValueError("Vectors must be of same dimension")
+        return Vector(*[a + b for a, b in zip(self.components, other.components)])
+
+    def __sub__(self, other):
+        if len(self.components) != len(other.components):
+            raise ValueError("Vectors must be of same dimension")
+        return Vector(*[a - b for a, b in zip(self.components, other.components)])
+
+    def __mul__(self, other):
+        if isinstance(other, Vector):
+            if len(self.components) != len(other.components):
+                raise ValueError("Vectors must be of same dimension")
+            return sum(a * b for a, b in zip(self.components, other.components))
+        else:
+            return Vector(*[a * other for a in self.components])
+
+    def __rmul__(self, other):
+        return self * other
+
+    def magnitude(self):
+        return math.sqrt(sum(a**2 for a in self.components))
+
+    def normalize(self):
+        mag = self.magnitude()
+        if mag == 0:
+            raise ValueError("Cannot normalize a zero vector")
+        return Vector(*[a / mag for a in self.components])
+
+
+# --- Employee Records Manager (OOP Version) ---
+import os
+
+class Employee:
+    def __init__(self, employee_id, name, position, salary):
+        self.employee_id = employee_id
+        self.name = name
+        self.position = position
+        self.salary = salary
+
+    def __str__(self):
+        return f"{self.employee_id}, {self.name}, {self.position}, {self.salary}"
+
+class EmployeeManager:
+    def __init__(self, filename="employees.txt"):
+        self.filename = filename
+
+    def add_employee(self):
+        employee_id = input("Enter Employee ID: ")
+        if self.search_employee_by_id(employee_id, suppress_output=True):
+            print("Employee ID already exists.")
+            return
+        name = input("Enter Name: ")
+        position = input("Enter Position: ")
+        salary = input("Enter Salary: ")
+        with open(self.filename, "a") as file:
+            file.write(f"{employee_id}, {name}, {position}, {salary}\n")
+        print("Employee added successfully!")
+
+    def view_employees(self):
+        try:
+            with open(self.filename, "r") as file:
+                print("Employee Records:")
+                print(file.read())
+        except FileNotFoundError:
+            print("No employee records found.")
+
+    def search_employee_by_id(self, employee_id=None, suppress_output=False):
+        if not employee_id:
+            employee_id = input("Enter Employee ID to search: ")
+        try:
+            with open(self.filename, "r") as file:
+                for line in file:
+                    if line.startswith(employee_id + ","):
+                        if not suppress_output:
+                            print("Employee Found:", line.strip())
+                        return True
+        except FileNotFoundError:
+            pass
+        if not suppress_output:
+            print("Employee not found.")
+        return False
+
+    def update_employee(self):
+        emp_id = input("Enter Employee ID to update: ")
+        updated_lines = []
+        found = False
+        try:
+            with open(self.filename, "r") as file:
+                for line in file:
+                    if line.startswith(emp_id + ","):
+                        name = input("New Name: ")
+                        position = input("New Position: ")
+                        salary = input("New Salary: ")
+                        updated_lines.append(f"{emp_id}, {name}, {position}, {salary}\n")
+                        found = True
+                    else:
+                        updated_lines.append(line)
+            with open(self.filename, "w") as file:
+                file.writelines(updated_lines)
+            print("Update successful." if found else "Employee not found.")
+        except FileNotFoundError:
+            print("No employee records found.")
+
+    def delete_employee(self):
+        emp_id = input("Enter Employee ID to delete: ")
+        new_lines = []
+        found = False
+        try:
+            with open(self.filename, "r") as file:
+                for line in file:
+                    if not line.startswith(emp_id + ","):
+                        new_lines.append(line)
+                    else:
+                        found = True
+            with open(self.filename, "w") as file:
+                file.writelines(new_lines)
+            print("Employee deleted." if found else "Employee not found.")
+        except FileNotFoundError:
+            print("No employee records found.")
+
+    def run(self):
+        while True:
+            print("""
+Welcome to the Employee Records Manager!
+1. Add new employee record
+2. View all employee records
+3. Search for an employee by Employee ID
+4. Update an employee's information
+5. Delete an employee record
+6. Exit""")
+            choice = input("Enter your choice: ")
+            if choice == '1':
+                self.add_employee()
+            elif choice == '2':
+                self.view_employees()
+            elif choice == '3':
+                self.search_employee_by_id()
+            elif choice == '4':
+                self.update_employee()
+            elif choice == '5':
+                self.delete_employee()
+            elif choice == '6':
+                print("Goodbye!")
+                break
+            else:
+                print("Invalid choice.")
+
+
+# --- To-Do Application ---
+import json
+import csv
+
+class Task:
+    def __init__(self, task_id, title, description, due_date, status):
+        self.task_id = task_id
+        self.title = title
+        self.description = description
+        self.due_date = due_date
+        self.status = status
+
+    def to_dict(self):
+        return self.__dict__
+
+    def __str__(self):
+        return f"{self.task_id}, {self.title}, {self.description}, {self.due_date}, {self.status}"
+
+class ToDoApp:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self):
+        task_id = input("Enter Task ID: ")
+        title = input("Enter Title: ")
+        description = input("Enter Description: ")
+        due_date = input("Enter Due Date (YYYY-MM-DD): ")
+        status = input("Enter Status (Pending/In Progress/Completed): ")
+        self.tasks.append(Task(task_id, title, description, due_date, status))
+        print("Task added successfully!")
+
+    def view_tasks(self):
+        print("Tasks:")
+        for task in self.tasks:
+            print(task)
+
+    def update_task(self):
+        task_id = input("Enter Task ID to update: ")
+        for task in self.tasks:
+            if task.task_id == task_id:
+                task.title = input("New Title: ")
+                task.description = input("New Description: ")
+                task.due_date = input("New Due Date: ")
+                task.status = input("New Status: ")
+                print("Task updated.")
+                return
+        print("Task not found.")
+
+    def delete_task(self):
+        task_id = input("Enter Task ID to delete: ")
+        self.tasks = [task for task in self.tasks if task.task_id != task_id]
+        print("Task deleted.")
+
+    def filter_tasks(self):
+        status = input("Enter status to filter by: ")
+        for task in self.tasks:
+            if task.status.lower() == status.lower():
+                print(task)
+
+    def save_tasks(self, filename, format):
+        if format == "json":
+            with open(filename, "w") as f:
+                json.dump([task.to_dict() for task in self.tasks], f)
+        elif format == "csv":
+            with open(filename, "w", newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=["task_id", "title", "description", "due_date", "status"])
+                writer.writeheader()
+                for task in self.tasks:
+                    writer.writerow(task.to_dict())
+        print("Tasks saved.")
+
+    def load_tasks(self, filename, format):
+        self.tasks = []
+        try:
+            if format == "json":
+                with open(filename, "r") as f:
+                    data = json.load(f)
+                    for item in data:
+                        self.tasks.append(Task(**item))
+            elif format == "csv":
+                with open(filename, "r") as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        self.tasks.append(Task(**row))
+            print("Tasks loaded.")
+        except FileNotFoundError:
+            print("File not found.")
