@@ -1,0 +1,155 @@
+# --- Animal Farm Model ---
+class Animal:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def eat(self):
+        print(f"{self.name} is eating.")
+
+    def sleep(self):
+        print(f"{self.name} is sleeping.")
+
+class Cow(Animal):
+    def __init__(self, name, age, milk_production):
+        super().__init__(name, age)
+        self.milk_production = milk_production
+
+    def moo(self):
+        print(f"{self.name} says Moo!")
+
+class Chicken(Animal):
+    def __init__(self, name, age, egg_count):
+        super().__init__(name, age)
+        self.egg_count = egg_count
+
+    def cluck(self):
+        print(f"{self.name} says Cluck!")
+
+class Sheep(Animal):
+    def __init__(self, name, age, wool_quantity):
+        super().__init__(name, age)
+        self.wool_quantity = wool_quantity
+
+    def baa(self):
+        print(f"{self.name} says Baa!")
+
+# Sample Usage
+cow = Cow("Bessie", 5, 20)
+cow.eat()
+cow.moo()
+
+chicken = Chicken("Clucky", 2, 100)
+chicken.sleep()
+chicken.cluck()
+
+sheep = Sheep("Wooly", 4, 10)
+sheep.eat()
+sheep.baa()
+
+
+# --- Bank Application ---
+import json
+import os
+
+class Account:
+    def __init__(self, account_number, name, balance):
+        self.account_number = account_number
+        self.name = name
+        self.balance = balance
+
+    def __str__(self):
+        return f"Account {self.account_number} | Name: {self.name} | Balance: ${self.balance:.2f}"
+
+class Bank:
+    def __init__(self, filename="accounts.txt"):
+        self.accounts = {}
+        self.filename = filename
+        self.load_from_file()
+
+    def create_account(self, name, initial_deposit):
+        account_number = str(len(self.accounts) + 1).zfill(5)
+        if account_number in self.accounts:
+            print("Account number already exists.")
+            return
+        self.accounts[account_number] = Account(account_number, name, float(initial_deposit))
+        print(f"Account created successfully! Account Number: {account_number}")
+        self.save_to_file()
+
+    def view_account(self, account_number):
+        account = self.accounts.get(account_number)
+        if account:
+            print(account)
+        else:
+            print("Account not found.")
+
+    def deposit(self, account_number, amount):
+        account = self.accounts.get(account_number)
+        if account:
+            account.balance += float(amount)
+            print(f"Deposited ${amount:.2f}. New balance: ${account.balance:.2f}")
+            self.save_to_file()
+        else:
+            print("Account not found.")
+
+    def withdraw(self, account_number, amount):
+        account = self.accounts.get(account_number)
+        if account:
+            if account.balance >= float(amount):
+                account.balance -= float(amount)
+                print(f"Withdrew ${amount:.2f}. New balance: ${account.balance:.2f}")
+                self.save_to_file()
+            else:
+                print("Insufficient funds.")
+        else:
+            print("Account not found.")
+
+    def save_to_file(self):
+        with open(self.filename, "w") as file:
+            data = {acc_num: acc.__dict__ for acc_num, acc in self.accounts.items()}
+            json.dump(data, file)
+
+    def load_from_file(self):
+        if not os.path.exists(self.filename):
+            return
+        with open(self.filename, "r") as file:
+            data = json.load(file)
+            self.accounts = {
+                acc_num: Account(acc_num, acc["name"], acc["balance"])
+                for acc_num, acc in data.items()
+            }
+
+# Sample run
+if __name__ == "__main__":
+    bank = Bank()
+    while True:
+        print("""
+--- Bank Menu ---
+1. Create Account
+2. View Account
+3. Deposit
+4. Withdraw
+5. Exit
+        """)
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            name = input("Enter your name: ")
+            deposit = input("Enter initial deposit: ")
+            bank.create_account(name, deposit)
+        elif choice == '2':
+            acc_num = input("Enter account number: ")
+            bank.view_account(acc_num)
+        elif choice == '3':
+            acc_num = input("Enter account number: ")
+            amount = input("Enter amount to deposit: ")
+            bank.deposit(acc_num, amount)
+        elif choice == '4':
+            acc_num = input("Enter account number: ")
+            amount = input("Enter amount to withdraw: ")
+            bank.withdraw(acc_num, amount)
+        elif choice == '5':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice.")
